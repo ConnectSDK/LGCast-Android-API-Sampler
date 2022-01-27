@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Screen Mirroring Sample</string>
+    <string name="button_mirroring">Mirroring</string>
+    <string name="button_stop">Stop</string>
+</resources>
