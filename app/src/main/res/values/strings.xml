@@ -1,5 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Screen Mirroring Sample</string>
+    <string name="app_name">LG Cast Sample</string>
+
+    <string name="menu_title_mirroring">[Sample #1] Screen mirroring</string>
+    <string name="menu_desc_mirroring">Share the app screen to the TV.</string>
+    <string name="menu_title_dual_screen">[Sample #2] Dual screen</string>
+    <string name="menu_desc_dual_screen">Create another screen and share it to the TV.</string>
+
     <string name="button_mirroring">Mirroring</string>
     <string name="button_stop">Stop</string>
+    <string name="button_dual_screen">Dual screen</string>
+
+    <string name="toast_unsupported_device">Unsupported device OS.</string>
+    <string name="toast_need_permission">Permission is required to connect to TV.</string>
+    <string name="toast_already_started">Screen mirroring is already started.</string>
+    <string name="toast_not_started">Screen mirroring is not started.</string>
+    <string name="toast_start">Started Screen mirroring.</string>
+    <string name="toast_start_fail">Failed to start Screen mirroring.</string>
+    <string name="toast_stop">Stopped Screen mirroring.</string>
+
+    <string name="dialog_title_notice">Notice</string>
+    <string name="dialog_message_process">Screen mirroring is in process.\nStop?</string>
+    <string name="dialog_message_choose">Select TV</string>
+    <string name="dialog_message_start">Connecting to TV…</string>
+    <string name="dialog_message_pairing">Please accept pairing request on TV.</string>
+    <string name="dialog_message_loading">Loading…</string>
+    <string name="dialog_message_stop">Disconnecting from TV…</string>
 </resources>
