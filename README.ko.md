@@ -1,28 +1,28 @@
 # LGCast SDK Sampler App for Android
 
-LG Cast is an additional feature provided by Connect SDK's WebOS TV Service.
-It provides screen sharing between mobile apps and LG TVs in a home network environment.
+LG Cast는 Connect SDK의 WebOS TV Service에서 추가적으로 제공되는 기능으로,
+홈네트워크 환경에서 모바일 앱과 LG TV 간의 화면 공유 기능을 제공합니다.
 
-There are two ways to cast the screen on the TV;
+TV에 화면을 출력하는 방법으로는 아래와 같이 두 가지 방법이 제공됩니다.
 
-+ Screen mirroring - Displays the entire app screen on TV. 
-+ Dual screen - Creates second screen separate from app, and displays it on TV.
++ 화면 미러링 - 앱 화면 전체를 TV에 출력합니다.
++ 듀얼 스크린 - 앱의 화면과 별개의 화면을 생성하여 TV에 출력합니다.
 
 *Read this in other languages: [English](README.md), [한국어](README.ko.md).*
 
-## Dependencies
+## 참조관계
 - [AndroidX Appcompat library](https://developer.android.com/jetpack/androidx/releases/appcompat)
 - [Connect-SDK-Android-Core](https://github.com/ConnectSDK/Connect-SDK-Android-Core)
 - [GStreamer multimedia framework](https://github.com/ConnectSDK/Connect-SDK-Android-Core/blob/master/jniLibs/libgstreamer_android.tar)
 
-## Setup with Android Studio
-1. Download the Sampler project
+## Android Studio 설치 방법
+1. Sampler 프로젝트를 내려받습니다.
     ```
     git clone https://github.com/ConnectSDK/LGCast-Android-API-Sampler.git
     ```
-2. Import the Sampler project into Android Studio
+2. Sampler project를 Android Studio에서 엽니다.
 
-## License
+## 라이선스
 
 LGCast SDK Sampler App for Android
 
