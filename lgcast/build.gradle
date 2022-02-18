@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('lgcast-sdk-2.1.2.aar'))

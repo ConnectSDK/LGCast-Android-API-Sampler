@@ -7,12 +7,15 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.lgcast.sample.screenmirroring.R;
+
 public class SimpleMediaPlayer {
     private static final String TAG = "LGCast Sampler";
     private final Context mContext;
     private final SurfaceView mSurfaceView;
-    private final MediaPlayer mMediaPlayer;
+    private MediaPlayer mMediaPlayer;
 
+    private String mContentUrl;
     private int mPausedPosition;
 
     public SimpleMediaPlayer(Context context, SurfaceView surfaceView) {
@@ -42,14 +45,19 @@ public class SimpleMediaPlayer {
         play(url, 0, false);
     }
 
+    public void play(String url, int position) {
+        play(url, position, false);
+    }
+
     public void play(String url, int position, boolean mute) {
         Log.v(TAG, "play url=" + url + ", position=" + position);
         if (url == null) throw new IllegalArgumentException("Invalid url");
 
-        SimpleProgress progress = new SimpleProgress(mContext, "Loading...", false);
+        SimpleProgress progress = new SimpleProgress(mContext, mContext.getString(R.string.dialog_message_loading), false);
         progress.show();
 
         mSurfaceView.setVisibility(View.VISIBLE);
+        mContentUrl = url;
 
         CommUtil.runInBackground(() -> {
             try {
@@ -91,5 +99,20 @@ public class SimpleMediaPlayer {
         Log.v(TAG, "resume. mPausedPosition=" + mPausedPosition);
         mMediaPlayer.seekTo(mPausedPosition);
         mMediaPlayer.start();
+    }
+
+    public void release() {
+        Log.v(TAG, "release");
+        if (mMediaPlayer != null) mMediaPlayer.stop();
+        if (mMediaPlayer != null) mMediaPlayer.release();
+        mMediaPlayer = null;
+    }
+
+    public String getContentUrl() {
+        return mContentUrl;
+    }
+
+    public int getCurrentPosition() {
+        return (mMediaPlayer != null) ? mMediaPlayer.getCurrentPosition() : 0;
     }
 }
