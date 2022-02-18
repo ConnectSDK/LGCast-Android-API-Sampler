@@ -147,8 +147,6 @@ public class DualFirstScreenActivity extends AppCompatActivity {
         else Toast.makeText(this, getString(R.string.toast_not_started), Toast.LENGTH_SHORT).show();
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
     private boolean hasCapturePermission() {
         Log.v(TAG, "hasCapturePermission");
         return checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
