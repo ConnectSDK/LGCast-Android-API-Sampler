@@ -8,8 +8,8 @@ android {
         applicationId "com.lgcast.sample.screenmirroring"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 100000
-        versionName "1.0.0"
+        versionCode 102003
+        versionName "1.2.3"
     }
 
     compileOptions {
@@ -18,27 +18,8 @@ android {
     }
 }
 
-apply plugin: 'maven-publish'
-
-publishing {
-    publications {
-        lgcast_sdk(MavenPublication) {
-            groupId 'ConnectSDK'
-            artifactId 'lgcast_sdk'
-            version '2.1.1'
-            artifact("$rootDir/lgcast/lgcast_sdk_v2.1.1.aar")
-        }
-    }
-}
-
-afterEvaluate {
-    tasks.clean.dependsOn("publishToMavenLocal")
-    tasks.preBuild.dependsOn("publishToMavenLocal")
-}
-
 dependencies {
+    implementation project(path: ':lgcast')
     implementation 'com.github.ConnectSDK:Connect-SDK-Android-Lite:-SNAPSHOT'
-    implementation "ConnectSDK:lgcast_sdk:2.1.1"
     implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.preference:preference:1.1.1'
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="#000000"
+    android:orientation="horizontal"
+    android:padding="0dp">
+
+    <SurfaceView
+        android:id="@+id/fsPlayerSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="1dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end">
+
+        <Button
+            android:id="@+id/fsMirroringButton"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_shape"
+            android:onClick="onClickStartMirroring"
+            android:text="@string/button_dual_screen"
+            android:textColor="#000000"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- Second Screen Buttons -->
+    <LinearLayout
+        android:id="@+id/fsControlButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/fsSecondScreenPause"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="3dp"
+            android:onClick="onClickSecondScreenPause"
+            android:padding="0dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/button_pause" />
+
+        <ImageButton
+            android:id="@+id/fsSecondScreenResume"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="3dp"
+            android:onClick="onClickSecondScreenResume"
+            android:padding="0dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/button_resume" />
+
+        <ImageButton
+            android:id="@+id/fsSecondScreenStop"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="3dp"
+            android:onClick="onClickSecondScreenStop"
+            android:padding="0dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/button_stop" />
+    </LinearLayout>
+
+</FrameLayout>

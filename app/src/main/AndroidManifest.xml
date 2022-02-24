@@ -17,16 +17,28 @@
         android:roundIcon="@mipmap/ic_launcher_round">
 
         <activity
-            android:name=".ScreenMirroringActivity"
+            android:name=".StartActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden|locale"
             android:screenOrientation="landscape"
-            android:theme="@style/FullScreenTheme"
+            android:theme="@style/NoTitleTheme"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ScreenMirroringActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden|locale"
+            android:screenOrientation="landscape"
+            android:theme="@style/FullScreenTheme" />
+
+        <activity
+            android:name=".DualFirstScreenActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden|locale"
+            android:screenOrientation="landscape"
+            android:theme="@style/FullScreenTheme" />
 
     </application>
 </manifest>

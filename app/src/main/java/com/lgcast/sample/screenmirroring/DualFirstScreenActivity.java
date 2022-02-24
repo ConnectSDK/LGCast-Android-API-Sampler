@@ -30,18 +30,19 @@ import com.lgcast.sample.utils.SimpleMediaPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScreenMirroringActivity extends AppCompatActivity {
-    private static final String TAG = "Screen Mirroring";
+public class DualFirstScreenActivity extends AppCompatActivity {
+    private static final String TAG = "Dual Screen";
     private static final int REQUEST_CODE_CAPTURE_PERMISSION = 0x2000;
     private static final int REQUEST_CODE_CAPTURE_CONSENT = 0x3000;
 
     private WebOSTVService mWebOSTVService;
     private SimpleMediaPlayer mMediaPlayer;
+    private DualSecondScreenActivity mSecondScreen;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.screenmirroring_activity);
+        setContentView(R.layout.firstscreen_activity);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if (!ScreenMirroringHelper.isOsCompatible()) {
@@ -59,7 +60,7 @@ public class ScreenMirroringActivity extends AppCompatActivity {
         DiscoveryManager.getInstance().setCapabilityFilters(filter);
         DiscoveryManager.getInstance().start();
 
-        mMediaPlayer = new SimpleMediaPlayer(this, findViewById(R.id.smPlayerSurface));
+        mMediaPlayer = new SimpleMediaPlayer(this, findViewById(R.id.fsPlayerSurface));
         mMediaPlayer.play("http://connectsdk.com/ConnectSDK.mp4");
     }
 
@@ -67,6 +68,9 @@ public class ScreenMirroringActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        if (mSecondScreen != null) mSecondScreen.stop();
+        mSecondScreen = null;
 
         if (mMediaPlayer != null) mMediaPlayer.stop();
         mMediaPlayer = null;
@@ -126,7 +130,19 @@ public class ScreenMirroringActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickStopMirroring(View v) {
+    public void onClickSecondScreenPause(View v) {
+        mSecondScreen.pause();
+        findViewById(R.id.fsSecondScreenPause).setVisibility(View.GONE);
+        findViewById(R.id.fsSecondScreenResume).setVisibility(View.VISIBLE);
+    }
+
+    public void onClickSecondScreenResume(View v) {
+        mSecondScreen.resume();
+        findViewById(R.id.fsSecondScreenPause).setVisibility(View.VISIBLE);
+        findViewById(R.id.fsSecondScreenResume).setVisibility(View.GONE);
+    }
+
+    public void onClickSecondScreenStop(View v) {
         if (ScreenMirroringHelper.isRunning(this)) stopMirroring();
         else Toast.makeText(this, getString(R.string.toast_not_started), Toast.LENGTH_SHORT).show();
     }
@@ -174,7 +190,7 @@ public class ScreenMirroringActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.ok, null)
                 .create();
 
-        mWebOSTVService.startScreenMirroring(this, projectionData, new LGCastControl.ScreenMirroringStartListener() {
+        mWebOSTVService.startScreenMirroring(this, projectionData, DualSecondScreenActivity.class, new LGCastControl.ScreenMirroringStartListener() {
             @Override
             public void onPairing() {
                 pairingAlert.show();
@@ -182,15 +198,26 @@ public class ScreenMirroringActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(SecondScreen secondScreen) {
-                Toast.makeText(ScreenMirroringActivity.this, getString(R.string.toast_start), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), getString(R.string.toast_start), Toast.LENGTH_LONG).show();
                 updateButtonVisibility();
                 pairingAlert.dismiss();
                 progress.dismiss();
+
+                if (secondScreen != null) {
+                    mSecondScreen = (DualSecondScreenActivity) secondScreen;
+                    mSecondScreen.start(mMediaPlayer.getContentUrl(), mMediaPlayer.getCurrentPosition());
+
+                    Log.v(TAG, "Stop 1st media player");
+                    mMediaPlayer.stop();
+
+                    findViewById(R.id.fsSecondScreenPause).setVisibility(View.VISIBLE);
+                    findViewById(R.id.fsSecondScreenResume).setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onError(ServiceCommandError error) {
-                Toast.makeText(ScreenMirroringActivity.this, getString(R.string.toast_start_fail), Toast.LENGTH_LONG).show();
+                Toast.makeText(DualFirstScreenActivity.this, getString(R.string.toast_start_fail), Toast.LENGTH_LONG).show();
                 Log.v(TAG, "Mirroring error: " + error.getMessage());
                 updateButtonVisibility();
                 pairingAlert.dismiss();
@@ -210,9 +237,14 @@ public class ScreenMirroringActivity extends AppCompatActivity {
         mWebOSTVService.stopScreenMirroring(this, new LGCastControl.ScreenMirroringStopListener() {
             @Override
             public void onSuccess(String message) {
-                Toast.makeText(ScreenMirroringActivity.this, getString(R.string.toast_stop), Toast.LENGTH_LONG).show();
+                Toast.makeText(DualFirstScreenActivity.this, getString(R.string.toast_stop), Toast.LENGTH_LONG).show();
                 updateButtonVisibility();
                 progress.dismiss();
+
+                Log.v(TAG, "Play 1st media player again");
+                String contentUrl = mSecondScreen.getContentUrl();
+                int currentPosition = mSecondScreen.getCurrentPosition();
+                mMediaPlayer.play(contentUrl, currentPosition);
             }
 
             @Override
@@ -223,13 +255,13 @@ public class ScreenMirroringActivity extends AppCompatActivity {
 
     private void updateButtonVisibility() {
         if (ScreenMirroringHelper.isRunning(this)) {
-            findViewById(R.id.smPlayerSurface).setVisibility(View.VISIBLE);
-            findViewById(R.id.smMirroringButton).setVisibility(View.GONE);
-            findViewById(R.id.smStopButton).setVisibility(View.VISIBLE);
+            findViewById(R.id.fsPlayerSurface).setVisibility(View.GONE);
+            findViewById(R.id.fsMirroringButton).setVisibility(View.GONE);
+            findViewById(R.id.fsControlButton).setVisibility(View.VISIBLE);
         } else {
-            findViewById(R.id.smPlayerSurface).setVisibility(View.VISIBLE);
-            findViewById(R.id.smMirroringButton).setVisibility(View.VISIBLE);
-            findViewById(R.id.smStopButton).setVisibility(View.GONE);
+            findViewById(R.id.fsPlayerSurface).setVisibility(View.VISIBLE);
+            findViewById(R.id.fsMirroringButton).setVisibility(View.VISIBLE);
+            findViewById(R.id.fsControlButton).setVisibility(View.GONE);
         }
     }
 }
