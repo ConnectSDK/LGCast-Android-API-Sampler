@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <SurfaceView
+        android:id="@+id/playerSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="10dp">
+
+        <Button
+            android:id="@+id/mirroringStartButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="140dp"
+            android:layout_height="38dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_shape"
+            android:onClick="onClickStartMirroring"
+            android:text="@string/button_start_mirroring"
+            android:textColor="#000000"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/drawingBoardButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="140dp"
+            android:layout_height="38dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_shape"
+            android:onClick="onClickDrawingBoard"
+            android:text="@string/button_drawing_board"
+            android:textColor="#000000"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/mirroringStopButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="140dp"
+            android:layout_height="38dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_shape"
+            android:onClick="onClickStopMirroring"
+            android:text="@string/button_stop_mirroring"
+            android:textColor="#000000"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/displayInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="10dp"
+        android:background="#66FFFFFF"
+        android:gravity="left|center"
+        android:padding="10dp"
+        android:textColor="#000000" />
+</FrameLayout>

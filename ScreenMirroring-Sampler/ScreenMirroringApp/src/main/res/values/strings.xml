@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Screen Mirroring Sampler</string>
+
+    <string name="toast_unsupported_os_version">지원하지 않은 OS 버전입니다.</string>
+    <string name="toast_allow_permission">스크린미러링을 사용하시려면 접근 권한을 허용하셔야 합니다.</string>
+    <string name="toast_allow_capture">스크린미러링을 사용하시려면 화면 캡쳐를 허용하셔야 합니다.</string>
+    <string name="toast_not_support_device">스크린미러링을 지원하지 않는 기기입니다.</string>
+    <string name="toast_already_started">이미 스크린 미러링이 실행 중입니다.</string>
+    <string name="toast_not_started">스크린 미러링이 실행되지 않았습니다.</string>
+    <string name="toast_start_completed">스크린 미러링을 시작합니다.</string>
+    <string name="toast_start_failed">스크린 미러링을 실패하였습니다.</string>
+    <string name="toast_running_error">스크린 미러링 실행중 오류가 발생하였습니다.</string>
+    <string name="toast_stopped">스크린 미러링을 종료하였습니다.</string>
+    <string name="toast_error">오류가 발생하였습니다</string>
+
+    <string name="dialog_title_notice">알림</string>
+    <string name="dialog_select_tv">TV를 선택하세요</string>
+    <string name="dialog_allow_pairing">TV에서 페어링 요청을 수락해주세요.</string>
+    <string name="dialog_connecting_tv">TV에 연결하는 중…</string>
+    <string name="dialog_close_on_mirroring">스크린 미러링이 실행 중입니다.\n종료하시겠습까?</string>
+    <string name="dialog_disconnecting_tv">TV 연결을 종료하는 중…</string>
+    <string name="dialog_close">종료하시겠습니까?</string>
+
+    <string name="button_screenmirroring_start">스크린미러링 시작하기</string>
+    <string name="button_start_mirroring">스크린미러링 시작</string>
+    <string name="button_stop_mirroring">스크린미러링 종료</string>
+    <string name="button_drawing_board">그림판</string>
+
+    <string name="accessibility_user_popup">LG TV 리모컨으로 TV에 공유된 스마트폰 화면을 조작하려면 접근성 설정이 필요합니다. 설정으로 이동하시겠습니까?\n\n* 지금 설정하지 않아도, 설정 > 접근성에서 [TV 리모컨으로 화면조작]을 켜면 리모컨을 사용할 수 있습니다.</string>
+    <string name="accessibility_service_label">LG TV 리모컨으로 화면 조작</string>
+    <string name="accessibility_service_description">화면 공유 시 LG TV 리모컨으로 모바일 기기 화면을 조작하기 위해 필요합니다.</string>
+</resources>
