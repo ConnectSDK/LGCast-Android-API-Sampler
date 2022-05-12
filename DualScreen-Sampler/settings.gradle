@@ -1,6 +1,2 @@
 rootProject.name = 'DualScreen-Sampler'
-
 include ':DualScreenApp'
-
-include ':Connect-SDK-Android-Lite'
-project(':Connect-SDK-Android-Lite').projectDir = new File('../../Connect-SDK-Android-Lite')
