@@ -14,7 +14,7 @@ TV에 화면을 출력하는 방법으로는 아래와 같이 두 가지 방법�
 ## 참조관계
 
 - [AndroidX Appcompat library](https://developer.android.com/jetpack/androidx/releases/appcompat)
-- [Connect-SDK-Android](https://github.com/ConnectSDK/Connect-SDK-Android)
+- [Connect-SDK-Android-Lite](https://github.com/ConnectSDK/Connect-SDK-Android-Lite)
 - [GStreamer multimedia framework](https://github.com/ConnectSDK/Connect-SDK-Android-Core/blob/master/jniLibs/libgstreamer_android.tar)
 
 ## Android Studio 설치 방법
