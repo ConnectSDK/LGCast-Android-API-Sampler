@@ -5,11 +5,11 @@ android {
     buildToolsVersion '30.0.3'
 
     defaultConfig {
-        applicationId "com.lgcast.sampler.screenmirroring"
+        applicationId 'com.lgcast.sampler.screenmirroring'
         minSdkVersion 24
         targetSdkVersion 32
         versionCode 102008
-        versionName "1.2.8"
+        versionName '1.2.8'
     }
 
     compileOptions {
@@ -20,5 +20,5 @@ android {
 
 dependencies {
     implementation 'com.github.ConnectSDK:Connect-SDK-Android-Lite:-SNAPSHOT'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
 }
