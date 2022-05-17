@@ -30,7 +30,6 @@
             android:name=".DeviceChooserActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden|locale"
             android:exported="false"
-            android:screenOrientation="landscape"
             android:theme="@style/Transparent" />
 
         <!-- LG TV 리모컨으로 화면 조작 기능 사용 시 -->

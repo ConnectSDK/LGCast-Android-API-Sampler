@@ -101,7 +101,7 @@ public class SnakeGameActivity extends AppCompatActivity {
             String deviceId = data.getStringExtra(DeviceChooserActivity.EXTRA_DEVICE_ID);
             Intent projectionData = data.getParcelableExtra(DeviceChooserActivity.EXTRA_PROJECTION_DATA);
             ConnectableDevice connectableDevice = DiscoveryManager.getInstance().getDeviceById(deviceId);
-            mScreenMirroringControl = (connectableDevice != null) ? connectableDevice.getScreenMirroringControl() : null;
+            mScreenMirroringControl = (connectableDevice != null) ? connectableDevice.getCapability(ScreenMirroringControl.class) : null;
 
             if (mScreenMirroringControl != null) startMirroring(projectionData);
             else Toast.makeText(this, getString(R.string.toast_error), Toast.LENGTH_SHORT).show();
@@ -119,20 +119,28 @@ public class SnakeGameActivity extends AppCompatActivity {
     public void onClickButton(View view) {
         switch (view.getId()) {
             case R.id.btnRight:
-            case R.id.btnRight2nd:
                 mSnakeGameControl.changeDirection(SnakeGameControl.Direction.RIGHT);
                 break;
             case R.id.btnLeft:
-            case R.id.btnLeft2nd:
                 mSnakeGameControl.changeDirection(SnakeGameControl.Direction.LEFT);
                 break;
             case R.id.btnUp:
-            case R.id.btnUp2nd:
                 mSnakeGameControl.changeDirection(SnakeGameControl.Direction.UP);
                 break;
             case R.id.btnDown:
-            case R.id.btnDown2nd:
                 mSnakeGameControl.changeDirection(SnakeGameControl.Direction.DOWN);
+                break;
+            case R.id.btnRight2nd:
+                mSnakeGameSecondScreen.changeDirection(SnakeGameControl.Direction.RIGHT);
+                break;
+            case R.id.btnLeft2nd:
+                mSnakeGameSecondScreen.changeDirection(SnakeGameControl.Direction.LEFT);
+                break;
+            case R.id.btnUp2nd:
+                mSnakeGameSecondScreen.changeDirection(SnakeGameControl.Direction.UP);
+                break;
+            case R.id.btnDown2nd:
+                mSnakeGameSecondScreen.changeDirection(SnakeGameControl.Direction.DOWN);
                 break;
         }
     }
@@ -179,7 +187,6 @@ public class SnakeGameActivity extends AppCompatActivity {
 
                 if (secondScreen != null) {
                     mSnakeGameSecondScreen = (SnakeGameSecondScreen) secondScreen;
-                    mSnakeGameControl = mSnakeGameSecondScreen.getSnakeGameControl();
                     mSnakeGameSecondScreen.setOnDismissListener(dialog -> finish());
                 }
             }

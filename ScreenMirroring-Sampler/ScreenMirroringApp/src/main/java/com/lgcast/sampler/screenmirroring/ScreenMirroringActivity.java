@@ -6,14 +6,10 @@ import android.app.Presentation;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,11 +17,6 @@ import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.discovery.DiscoveryManager;
 import com.connectsdk.service.capability.ScreenMirroringControl;
 import com.connectsdk.service.capability.ScreenMirroringControl.ScreenMirroringStartListener;
-import com.connectsdk.service.webos.lgcast.common.utils.AppUtil;
-import com.connectsdk.service.webos.lgcast.common.utils.DeviceUtil;
-import com.connectsdk.service.webos.lgcast.common.utils.Logger;
-import com.connectsdk.service.webos.lgcast.common.utils.StringUtil;
-import com.connectsdk.service.webos.lgcast.screenmirroring.service.MirroringServiceFunc;
 
 public class ScreenMirroringActivity extends AppCompatActivity {
     private static final String TAG = "LGCAST (screen mirroring)";
@@ -53,28 +44,8 @@ public class ScreenMirroringActivity extends AppCompatActivity {
             mMediaPlayer.play(descriptor);
             descriptor.close();
         } catch (Exception e) {
-            Logger.error(e);
             Toast.makeText(this, getString(R.string.toast_error) + " : " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (AppConfig.SHOW_DEVICE_INFO == true) {
-            StringBuffer sb = new StringBuffer();
-            sb.append("LGCast SDK Version : " + ScreenMirroringControl.getSdkVersion(this) + "\n");
-            sb.append("Manufacturer : " + Build.MANUFACTURER + "\n");
-            sb.append("Model Name : " + Build.MODEL + "\n");
-            sb.append("Processor bits: " + DeviceUtil.getProcessorBits() + "\n");
-            sb.append("Total RAM: " + StringUtil.toHumanReadableSize(DeviceUtil.getTotalMemorySpace(this)) + "\n");
-            sb.append("Free RAM: " + StringUtil.toHumanReadableSize(DeviceUtil.getFreeMemorySpace(this)) + "\n");
-
-            Point displaySize = AppUtil.getDisplaySizeInLandscape(this);
-            sb.append("Display size: " + displaySize.x + " x " + displaySize.y + "\n");
-
-            if (MirroringServiceFunc.isCaptureByDisplaySize(this) == true) sb.append("Capture size: " + displaySize.x + " x " + displaySize.y + "");
-            else sb.append("Capture size: " + 1920 + " x " + 1080 + "");
-
-            TextView displayInfo = findViewById(R.id.displayInfo);
-            displayInfo.setText(sb.toString());
         }
     }
 
@@ -128,7 +99,7 @@ public class ScreenMirroringActivity extends AppCompatActivity {
             String deviceIpAddress = data.getStringExtra(DeviceChooserActivity.EXTRA_DEVICE_IP_ADDRESS);
             Intent projectionData = data.getParcelableExtra(DeviceChooserActivity.EXTRA_PROJECTION_DATA);
             ConnectableDevice connectableDevice = DiscoveryManager.getInstance().getDeviceByIpAddress(deviceIpAddress);
-            mScreenMirroringControl = (connectableDevice != null) ? connectableDevice.getScreenMirroringControl() : null;
+            mScreenMirroringControl = (connectableDevice != null) ? connectableDevice.getCapability(ScreenMirroringControl.class) : null;
 
             if (mScreenMirroringControl != null) startMirroring(projectionData);
             else Toast.makeText(this, getString(R.string.toast_error), Toast.LENGTH_SHORT).show();
@@ -136,16 +107,7 @@ public class ScreenMirroringActivity extends AppCompatActivity {
     }
 
     public void onClickStartMirroring(View v) {
-        if (AppConfig.USE_ACCESSBILITY_SERVICE_UIBC == true && ScreenMirroringControl.isUibcEnabled(this) == false) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.accessibility_service_label));
-            builder.setMessage(getString(R.string.accessibility_user_popup));
-            builder.setPositiveButton(android.R.string.yes, (dialog, index) -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
-            builder.setNegativeButton(android.R.string.no, (dialog, index) -> startActivityForResult(new Intent(this, DeviceChooserActivity.class), 0x1234));
-            builder.show();
-        } else {
-            startActivityForResult(new Intent(this, DeviceChooserActivity.class), 0x1234);
-        }
+        startActivityForResult(new Intent(this, DeviceChooserActivity.class), 0x1234);
     }
 
     public void onClickStopMirroring(View v) {

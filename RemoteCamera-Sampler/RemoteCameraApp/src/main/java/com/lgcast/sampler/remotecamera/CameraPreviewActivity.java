@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.discovery.DiscoveryManager;
-import com.connectsdk.service.WebOSTVService;
 import com.connectsdk.service.capability.RemoteCameraControl;
 import com.connectsdk.service.capability.RemoteCameraControl.RemoteCameraStartListener;
 
@@ -36,9 +35,8 @@ public class CameraPreviewActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         String deviceIpAddress = getIntent().getStringExtra(EXTRA_DEVICE_IP_ADDRESS);
-        ConnectableDevice connectableDevice = (ConnectableDevice) DiscoveryManager.getInstance().getDeviceByIpAddress(deviceIpAddress);
-        WebOSTVService webOSTVService = (connectableDevice != null) ? (WebOSTVService) connectableDevice.getServiceByName(WebOSTVService.ID) : null;
-        mRemoteCameraControl = (webOSTVService != null) ? webOSTVService.getRemoteCameraControl() : null;
+        ConnectableDevice connectableDevice = DiscoveryManager.getInstance().getDeviceByIpAddress(deviceIpAddress);
+        mRemoteCameraControl = (connectableDevice != null) ? connectableDevice.getCapability(RemoteCameraControl.class) : null;
         if (mRemoteCameraControl == null) throw new IllegalArgumentException("Invalid Remote Camera Control");
 
         String deviceFriendlyName = getIntent().getStringExtra(EXTRA_DEVICE_FRIENDLY_NAME);

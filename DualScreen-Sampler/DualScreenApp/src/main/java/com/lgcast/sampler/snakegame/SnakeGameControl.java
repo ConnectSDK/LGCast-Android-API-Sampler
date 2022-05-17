@@ -22,7 +22,7 @@ public class SnakeGameControl {
     private static final int RECT_SIZE = 90;
 
     private static final int INITIAL_SNAKE_SIZE = 3;
-    private static final int SNAKE_MOVE_SPEED = 300;
+    private static final int SNAKE_MOVE_SPEED = 500;
 
     private Context mContext;
     private int mScreenWidth;
@@ -38,21 +38,6 @@ public class SnakeGameControl {
     private Direction mDirection;
     private AtomicBoolean mPauseGame;
     private Timer mMoveTimer;
-
-    //public SnakeGameControl(Context context, LinearLayout gameLayout, int screenWidth, int screenHeight, int rectSize) {
-    //    mContext = context;
-    //    mScreenWidth = screenWidth;
-    //    mScreenHeight = screenHeight;
-    //    mBlockSize = rectSize;
-    //
-    //    mSnake = createSnake();
-    //    mFood = generateNewFood();
-    //    mScore = 0;
-    //
-    //    mGameView = new SnakeGameView(mContext, mSnake, mFood, mScore, mScreenWidth, mScreenHeight);
-    //    mGameView.setLayoutParams(new LinearLayout.LayoutParams(mScreenWidth, mScreenHeight));
-    //    gameLayout.addView(mGameView, 0);
-    //}
 
     public SnakeGameControl(Context context, LinearLayout gameLayout) {
         mContext = context;

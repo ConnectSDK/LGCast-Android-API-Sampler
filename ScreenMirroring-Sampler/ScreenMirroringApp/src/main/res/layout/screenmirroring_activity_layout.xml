@@ -52,15 +52,4 @@
             android:textColor="#000000"
             android:visibility="gone" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/displayInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:layout_margin="10dp"
-        android:background="#66FFFFFF"
-        android:gravity="left|center"
-        android:padding="10dp"
-        android:textColor="#000000" />
 </FrameLayout>

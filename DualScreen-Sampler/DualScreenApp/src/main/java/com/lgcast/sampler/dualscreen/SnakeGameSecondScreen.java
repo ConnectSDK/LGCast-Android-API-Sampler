@@ -43,7 +43,7 @@ public class SnakeGameSecondScreen extends Presentation implements SnakeGameList
         mSnakeGameControl.startGame();
 
         mRefreshText = findViewById(R.id.refreshText);
-        mRefeshTimer = TimerUtil.schedule(() -> mRefreshText.setText("" + System.nanoTime()), 0, 10);
+        mRefeshTimer = TimerUtil.schedule(() -> mRefreshText.setText("" + System.nanoTime()), 0, 15);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class SnakeGameSecondScreen extends Presentation implements SnakeGameList
         });
     }
 
-    public SnakeGameControl getSnakeGameControl() {
-        return mSnakeGameControl;
+    public void changeDirection(SnakeGameControl.Direction direction) {
+        mSnakeGameControl.changeDirection(direction);
     }
 }
