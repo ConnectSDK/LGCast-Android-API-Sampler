@@ -1,368 +1,249 @@
-LG Cast
+LG Cast 원격카메라
 ====================
-LG Cast는 Connect SDK의 WebOSTVService에서 추가적으로 제공되는 기능으로   
-홈네트워크 환경에서 모바일 앱과 LG TV간의 화면 공유 기능을 제공합니다.   
-TV에 화면을 출력하는 방법으로는 아래와 같이 두 가지 방법이 제공됩니다.  
-   
-+ 화면 미러링 - 앱 화면 전체를 TV에 출력하는 방법 입니다. 
-+ 듀얼 스크린 - 앱의 화면과 별개의 도로 은 그대로 두고 두 번째 화면을 생성하여 TV에 출력하는 방법 입니다. 
+LG Cast 원격카메라는 핸드폰의 카메라 프리뷰 영상을 TV로 출력하는 기능을 제공합니다. 이 기능을 이용하면 카메라가 없는 TV에서, 핸드폰의 카메라를 TV 카메라도 이용할 수 있습니다.
 <br>
 
 
-지원 OS 버전 
+LG Cast SDK 설정
 ------------------
-Android 플랫폼에서 LG Cast SDK를 사용하기 위해서는 다음과 같은 사양이 요구됩니다.   
-지원되지 않는 OS 버전의 경우, 알림 팝업 등의 사용을 제한하는 적절한 기능을 추가하여야 합니다. 
-   
-+	Android Version 10(Q) 이상
-+	Android API 레벨 29 이상
-<br>
-
-
-LG Cast SDK 설정 
-------------------
-LG Cast SDK는 다음과 같이 Android Studio의 Project gradle에 의존성을 설정하여 사용하여야 합니다.   
-현재 제공되는 최선버전은 https://github.com/ConnectSDK/Connect-SDK-Android에서 Release된 내역을 확인하십시오. 
-
+다음과 같이 Project gradle에 Connect SDK의 의존성을 설정합니다.
 ```gradle
 dependencies {
     //.....
-    implementation  'com.connectsdk:connect-sdk-android:1.x.x'
+     implementation 'com.github.ConnectSDK:Connect-SDK-Android-Lite:-SNAPSHOT'
 }
 ```
 <br>
 
 
-퍼미션 
+퍼미션 설정
 ------------------
-LG Cast SDK에 적용되어 있는 퍼미션은 다음과 같습니다. 이중 RECORD_AUDIO은 런타임에서   
-사용자 동의를 득하는 절차를 거쳐야 하며, 자세한 사항은 아래 설명을 참고하여 주십시오.   
-
+원력 카메라 기능은 CAMERA 및 RECORD_AUDIO 퍼미션을 필요로 하며, 앱 실행 시 이에 대한 사용자 동의를 득하여야 합니다.
 ```xml
+<uses-permission android:name="android.permission.CAMERA"/>
 <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 ```
 <br>
 
 
-스크린 미러링 
+원력 카메라 시작
 ------------------
-스크린 미러링은 앱 전체의 화면과 오디오를 TV로 출력할 수 있습니다.  
-이의 실행은 다음과 같은 순서로 진행합니다.  
+원력 카메라 시작 절차는 다음과 같은 순서로 진행합니다.
 <br>
 
-#### 1. Android 버전 확인
-LG Cast는 Android 10이상에서만 구동되기 때문에 앱 시작 시 OS 버전을 확인하여야 합니다.  
-만약 지원 가능한 OS가 아닌 경우 팝업 등의 사용자 가이드를 제공하고, 사용을 제한하여야 합니다.  
+
+#### 1. 원격카메라 지원 여부 확인
+원격카메라 기능은 Android 7 (API 24, N) 버전부터 지원됩니다. 앱 실행 시 OS 버전을 확인하여 원격카메라 가능 여부를 확인하고, 원격카메라 기능이 지원되지 않는 OS 버전의 경우 관련 기능을 출력하지 않거나, 앱을 종료합니다.
 
 ```java
-if (ScreenMirroringHelper.isOsCompatible() == false) {
-    Toast.makeText(this, "This OS can't run LG Cast.", Toast.LENGTH_LONG).show();
-    finish();
+if (RemoteCameraApi.getInstance().isCompatibleOsVersion() == false) {
+    // OS 버전이 Android 7 미만으로
+    // 원격카메라 기능이 지원되지 않음.
 }
 ```
 <br>
 
 
-#### 2. TV 검색   
-앱 실행 시 우선적으로 LG Cast를 지원하는 TV를 검색하여야 합니다.   
-TV는 동일 네트워크에 연결되어 있어야 하며, LG Cast를 지원하는 TV만을 검색하기 위해서는   
-다음과 같이 Capability 필터를 설정합니다.  
-
+#### 2. TV 검색
+홈네트워크에 연결된 TV를 검색합니다. 검색시 원격카메라 기능을 지원하는 TV만 선별적으로 검색하기 위해 filter를 설정할 수 있습니다.
 ```java
-List<String> capabilities = new ArrayList<>();
-capabilities.add(LGCastControl.ScreenMirroring);
+// DiscoveryManager 초기화.
+DiscoveryManager.init(this);
+
+// 원격카메라 지원기기 검색 필터 설정
+ArrayList<String> capabilities = new ArrayList<>();
+capabilities.add(RemoteCameraControl.RemoteCamera);
 CapabilityFilter filter = new CapabilityFilter(capabilities);
 
-DiscoveryManager.init(this);
+// 기기 검색
 DiscoveryManager.getInstance().setPairingLevel(DiscoveryManager.PairingLevel.ON);
 DiscoveryManager.getInstance().setCapabilityFilters(filter);
+DiscoveryManager.getInstance().registerDeviceService(WebOSTVService.class, SSDPDiscoveryProvider.class);
 DiscoveryManager.getInstance().start();
 ```
 <br>
 
 
-#### 3. 퍼미션 확인   
-스크린 미러링을 위해서는 오디오 사용권한을 필요로 합니다.   
-미러링 시작 시 오디오 사용권한을 확인하고, 없는 경우 퍼미션 동의 절차를 진행합니다.   
-퍼미션 동의는 최초 실행 시 한번만 진행됩니다. 
-
+#### 3. 퍼미션 획득
+원격카메라 기능은 android.permission.CAMERA 및 android.permission.RECORD_AUDIO  퍼미션을 필요로 합니다. 앱 최초 실행이 이 퍼미션에 대한 사용자 승인을 받아야 합니다.
 ```java
-public void onClickStartMirroring(View v) {
-    if (hasCapturePermission())
-        chooseDevice(); // Do next step
-    else
-        requestCapturePermission();
-}
+// 퍼미션 요청
+String[] permissions = new String[]{android.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
+ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ACCESS_PERMISSIONS);
 
-private boolean hasCapturePermission() {
-    return checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
-}
-
-private void requestCapturePermission() {
-    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 0x100);
-}
-
-@Override
+// 요청 결과는 onRequestPermissionsResult로 전달된다.
 public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-    if (requestCode == 0x100) {
-        if (hasCapturePermission())
-            chooseDevice(); // Do next step
-        else
-            Toast.makeText(this, "Allow to record audio to use screen mirroring", Toast.LENGTH_LONG).show();
+    if (requestCode == REQUEST_CODE_ACCESS_PERMISSIONS) {
+        if (hasPermission() == true) {
+            // 퍼미션 획득 성공
+        } else {
+            // 퍼미션 획득 실패
+        }
     }
+}
+
+// 퍼미션 확인하기
+private boolean hasPermission() {
+   return ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
 }
 ```
 <br>
 
 
-#### 4. TV 선택 
-검색된 TV 목록을 출력하고 스크린을 미러링할 TV를 선택합니다.   
-TV 목록은 기 정의된 Dialog로 제공되며, LG Cast API 접근을 위해 TV 선택 시   
-WebOS 서비스 객체를 멤버변수로 저장하여야 합니다. 
-
+#### 4. TV 선택
+검색된 TV 목록을 출력하고 원격카메라를 실행할 TV를 선택합니다. TV 디바이스 선택 후 원격카메라 API 사용을 위한 RemoteCameraControl 객체를 얻어옵니다.
 ```java
+private RemoteCameraControl mRemoteCameraControl ;
+
 AdapterView.OnItemClickListener listener = (adapter, parent, position, id) -> {
-    ConnectableDevice device = (ConnectableDevice) adapter.getItemAtPosition(position);
-    mWebOSTVService = (WebOSTVService) device.getServiceByName(WebOSTVService.ID);
-    requestCaptureConsent(); // Do next step
+    ConnectableDevice connectableDevice = (ConnectableDevice) adapter.getItemAtPosition(position);
+    mRemoteCameraControl  = connectableDevice.getRemoteCameraControlControl();
+    // 생략
 };
 
-AlertDialog dialog = new DevicePicker(this).getPickerDialog("Select TV", listener);
+// TV 검색 Picker 다이얼로그 출력
+AlertDialog dialog = new DevicePicker(this).getPickerDialog(getString(R.string.dialog_select_tv), listener);
 dialog.show();
 ```
 <br>
 
 
-#### 5. Screen Capture에 대한 사용자 승인 
-화면을 캡쳐하기 위해서는 사용자 승인을 득하여야 한다.   
-사용자 승인을 위한 고지 내용은 시스템 팝업으로 정의되어 있고 MediaProjectionManager를 통해 호출하여야 합니다.   
-스크린 캡쳐 동의 팝업 호출을 위한 절차는 다음과 같습니다.   
-동의 시 Intent 데이터를 LG Cast API로 전달하여야 합니다.
+#### 5. 원격카메라 실행
+상기의 사전 작업이 완료되면 원격카메라를 실행할 수 있습니다.
 
+먼저 카메라 미리보기를 출력할 Surface View 콤포넌트를 생성하고, 생성 완료 시 이의 Surface를 매개변수로 전달합니다. 만약 미리보기가 필요없는 경우 Surface를 null로 지정하도록 합니다.
+
+이외, 마이크 음소거 여부, 카메라 렌즈 방향 등의 초기값을 정하여 매개변수로 전달합니다.  TV에 최초 연결 시 Paring 절차가 필요하며, 이에 대해 사용자에게 안내를 제공한다.
 ```java
-private void requestCaptureConsent() {    
-    MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-    startActivityForResult(projectionManager.createScreenCaptureIntent(), 0x200);
-}
+// 카메라 Preview 출력할 SurfaceView를 만들도록 한다.
+SurfaceView surfaceView = findViewById(R.id.surfaceView);
+SurfaceHolder holder = surfaceView.getHolder();
 
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);    
-
-    if (requestCode == 0x200 && resultCode == RESULT_OK) 
-        startMirroring(data);    
-}
-```
-<br>
-
-
-#### 6. 미러링 시작 
-TV 디바이스 선택 시 저장된 mWebOSTVService의 startScreenMirroring API를 호출하여 미러링을 시작합니다.   
-미러링 요청 후 호출되는 리스너 함수는 다음과 같습니다.
-
-+ onPairing
-– TV에 최초 연결 시 Paring 요청이 있을 경우 호출됩니다.
-- Paring 요청이 있을 경우 이를 사용자에게 고지하고 Paring이 완료될 때까지 대기가 필요합니다.  
-+ onSuccess 
-– 미러링이 성공한 경우 호출됩니다.   
-+ onError 
-– 미러링이 실패하거나 실행 중 비정상적으로 종료된 경우 호출됩니다.   
-```java
-ProgressDialog progress = new ProgressDialog(this);
-progress.setMessage("TV에 연결하는 중...");
-progress.show();
-
-AlertDialog pairingAlert = new AlertDialog.Builder(this)
-        .setTitle("알림")
-        .setCancelable(false)
-        .setMessage("TV에서 페어링 요청을 수락해주세요.")
-        .setNegativeButton(android.R.string.ok, null)
-        .create();
-
-mWebOSTVService.startScreenMirroring(this, projectionData, new LGCastControl.ScreenMirroringStartListener() {
-    @Override
-    public void onPairing() {
-        pairingAlert.show();
+holder.addCallback(new SurfaceHolder.Callback() {
+    public void surfaceCreated(SurfaceHolder holder) {
+        // SurfaceView가 생성되면 이를 인자로 넘겨
+        // 원격카메라를 시작을 요청한다.
+        startRemoteCamera(holder.getSurface());
     }
 
-    @Override
-    public void onSuccess(SecondScreen secondScreen) {
-        Toast.makeText(ScreenMirroringActivity.this, "미러링을 시작합니다.", Toast.LENGTH_LONG).show();
-        updateButtonVisibility();
-        pairingAlert.dismiss();
-        progress.dismiss();
-    }
-
-    @Override
-    public void onError(ServiceCommandError error) {
-        Toast.makeText(ScreenMirroringActivity.this, "미러링을 실패하였습니다.", Toast.LENGTH_LONG).show();
-        updateButtonVisibility();
-        pairingAlert.dismiss();
-        progress.dismiss();
-    }
-});
-```
-<br>
-
-
-#### 7. 미러링 종료 
-미러링 종료 시는 mWebOSTVService의 stopScreenMirroring을 호출합니다.   
-미러링 종료가 완료되면 onSuccess 리스너가 호출합니다.   
-
-```java
-ProgressDialog progress = new ProgressDialog(this);
-progress.setMessage("TV 연결을 종료하는 중...");
-progress.show();
-
-ScreenMirroringApi.getInstance().stopMirroring(this, new LGCastControl.ScreenMirroringStopListener() {
-    @Override
-    public void onSuccess(String message) {
-        Toast.makeText(ScreenMirroringActivity.this, "미러링을 종료하였습니다.", Toast.LENGTH_LONG).show();
-        updateButtonVisibility();
-        progress.dismiss();
-    }
-
-    @Override
-    public void onError(ServiceCommandError error) {
-        // Do nothing
-    }
+    // 생략
 });
 
-```
-<br>
-
-
-#### 8. 디바이스 검색 종료 
-앱 종료 시 또는 디바이스 검색이 불필요한 경우 다음과 같이 디바이스 검색을 종료합니다.
-
-```java
-DiscoveryManager.getInstance().stop();
-DiscoveryManager.destroy();
-```
-<br>
-
-
-듀얼 스크린 
-------------------
-듀얼 스크린 기능은 앱의 화면 (First Screen)과 별개의 화면 (Second Screen)을 생성하여 이를 TV로 출력하는 기능입니다.   
-기본적인 절차는 상기의 스크린 미러링과 동일하며 아래에서는 차이가 나는 부분만 별도로 설명합니다.   
-<br>
-
-#### 1. Second Screen 생성  
-SecondScreen 클래스는 세컨드 스크린 생성에 필요한 기능이 추상화된 Dialog 객체입니다.   
-이를 상속받아 세컨드 스크린을 자유롭게 정의합니다.   
-<br>
-아래는 세컨드 스크린에서 별개의 영상을 재생하는 예제입니다.
-
-```java
-public class DualSecondScreenActivity extends SecondScreen {
-    private Context mContext;
-    private SimpleMediaPlayer mMediaPlayer;
-
-    public DualSecondScreenActivity(Context context, Display display) {
-        super(context, display);
-        mContext = context;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.secondscreen_activity);
-        mMediaPlayer = new SimpleMediaPlayer(mContext, findViewById(R.id.ssPlayerSurface));
-    }
-
-    public void start(String url, int position) {
-        mMediaPlayer.play(url, position, true);
-    }
-
-    public void stop() {
-        if (mMediaPlayer != null) mMediaPlayer.release();
-        mMediaPlayer = null;
-    }
-
-    public void pause() {
-        mMediaPlayer.pause();
-    }
-
-    public void resume() {
-        mMediaPlayer.resume();
-    }
-}
-
-```
-<br>
-
-
-#### 2. 미러링 시작 
-미러링 시작 시 위에서 정의한 세컨드 스크린 클래스 원형을 파라메터에 추가합니다.   
-객체를 생성하지 않고 정의한 클래스 타입만 넘겨주어야 합니다.   
-본 예제에서 정의한 세컨드 스크린 클래스는 DualSecondScreenActivity.class 입니다.   
-<br>
-세컨드 스크린을 미러링 성공하고 나면 생성된 세컨드 스크린 객체가 콜백으로 전달됩니다.   
-이를 참조로 세컨드 스크린을 제어할 수 있습니다.   
-
-```java
-private void startMirroring(Intent projectionData) {        
-    if (mWebOSTVService == null) return;
-
-    ProgressDialog progress = new ProgressDialog(this);
-    progress.setMessage("TV에 연결하는 중...");
-    progress.show();
-
+private void startRemoteCamera(Surface surface) {
     AlertDialog pairingAlert = new AlertDialog.Builder(this)
-            .setTitle("알림")
+            .setTitle(getString(R.string.dialog_title_notice))
             .setCancelable(false)
-            .setMessage("TV에서 페어링 요청을 수락해주세요.")
+            .setMessage(getString(R.string.dialog_allow_pairing))
             .setNegativeButton(android.R.string.ok, null)
             .create();
 
-    mWebOSTVService.startScreenMirroring(this, projectionData, DualSecondScreenActivity.class, new LGCastControl.ScreenMirroringStartListener() {
-        @Override
+    // 원격카메라를 시작한다.
+    // 각 진행 단계는 콜백 함수를 통해 전달된다.
+    mRemoteCameraControl.startRemoteCamera(this, surface, mMicMute, mLensFacing, new RemoteCameraStartListener() {
+        // TV에 처음 연결하는 경우 TV에서 모바일 연결에 대한 안내 팝업이 출력되며
+        // 이를 사용자가 리모컨으로 [확인]하는 페이링 절차가 필요하다. (최초 1회)
+        // 이 경우 앱에서는 이에 대한 안내 팝업을 출력하도록 한다.
         public void onPairing() {
             pairingAlert.show();
         }
 
-        @Override
-        public void onSuccess(SecondScreen secondScreen) {
-            Toast.makeText(getBaseContext(), "미러링을 시작합니다.", Toast.LENGTH_LONG).show();
-            updateButtonVisibility();
-            pairingAlert.dismiss();
-            progress.dismiss();
-
-            if (secondScreen != null) {
-                mSecondScreen = (DualSecondScreenActivity) secondScreen;
-                mSecondScreen.start(mMediaPlayer.getContentUrl(), mMediaPlayer.getCurrentPosition());
-
-                // Stop current player
-                mMediaPlayer.stop();
-
-                findViewById(R.id.fsSecondScreenPause).setVisibility(View.VISIBLE);
-                findViewById(R.id.fsSecondScreenResume).setVisibility(View.GONE);
+        // 원격카메라가 시작되면 호출되는 콜백함수이며
+        // 성공 여부를 result 파라메터를 통해 전달한다.
+        public void onStart(boolean result) {
+            if (result == true) {
+                mPlayingAlert.show();
+            } else {
+                Toast.makeText(CameraPreviewActivity.this, getString(R.string.toast_start_failed), Toast.LENGTH_SHORT).show();
+                finish();
             }
-        }
-
-        @Override
-        public void onError(ServiceCommandError error) {
-            Toast.makeText(DualFirstScreenActivity.this, "미러링을 실패하였습니다.", Toast.LENGTH_LONG).show();                
-            updateButtonVisibility();
             pairingAlert.dismiss();
-            progress.dismiss();
         }
     });
-} 
+
+
+
+    // TV에서 카메라 Property를 변경하면 호출되는 콜백을 처리한다.
+    mRemoteCameraControl.setPropertyChangeListener(this, property -> {
+        Toast.makeText(this, getString(R.string.toast_property_changed) + ": " + property, Toast.LENGTH_SHORT).show();
+    });
+
+    // 원격카메라 실행 중 예기치 않은 에러가 발생하면 호출되는 콜백함수이다.
+    // 에러가 발생하는 경우는 네트워크 연결이 끊어지거나, TV가 종료되는 경우 등이다.
+    mRemoteCameraControl.setErrorListener(this, error -> {
+        Toast.makeText(this, getString(R.string.toast_running_error) + ": " + error, Toast.LENGTH_SHORT).show();
+        mPlayingAlert.dismiss();
+    });
+}
 ```
 <br>
 
 
-샘플 코드 
-------------------
-전체 샘플코드는 아래를 참고하여 주십시요.   
-https://github.com/ConnectSDK/LGCast-Android-API-Sampler
+#### 6. 카메라 선택 및 프리뷰 시작
+TV에서 폰 카메라를 선택하여 카메라 스트림 전송 및 재생이 시작된 경우 Callback으로 전달 받기위해 setCameraPlayingListener를 지정합니다.
+```java
+// TV에서 모바일을 선택하여 원격카메라 Preview 화면 전송이 시작되면
+// 호출되는 콜백을 처리한다.
+mRemoteCameraControl.setCameraPlayingListener(this, () -> {
+    Toast.makeText(this, getString(R.string.toast_play_started), Toast.LENGTH_SHORT).show();
+    mPlayingAlert.dismiss();
+});
+```
 <br>
+
+
+#### 7. 카메라 Property 변경
+TV에서 밝기, AWB 등의 카메라 속성을 변경할 수 있고, setCameraPlayingListener 리스너를 지정하여 Callback을 전달받을 수 있습니다.
+```java
+// TV에서 카메라 Property를 변경하면 호출되는 콜백을 처리한다.
+mRemoteCameraControl.setPropertyChangeListener(this, property -> {
+    Toast.makeText(this, getString(R.string.toast_property_changed) + ": " + property, Toast.LENGTH_SHORT).show();
+});
+```
+<br>
+
+
+#### 8. 카메라 Property 변경
+원격카메라가 실행된 후 다음과 같은 Run-Time error가 발생할 수 있습니다. 이러한 에러에 대해서는 리스너를 등록하여 실시간으로 전달받아 적절한 처리를 하여야 합니다.
+  1) 네트워크 연결이 종료된 경우
+  2) TV가 종료된 경우
+  3) TV에서 Screen Mirroing이 종료된 경우
+  4) 폰 Notification으로 미러링 기능을 종료한 경우
+  5) 기타 예외상황 발생
+```java
+// 원격카메라 실행 중 예기치 않은 에러가 발생하면 호출되는 콜백함수이다.
+// 에러가 발생하는 경우는 네트워크 연결이 끊어지거나, TV가 종료되는 경우 등이다.
+mRemoteCameraControl.setErrorListener(this, error -> {
+    Toast.makeText(this, getString(R.string.toast_running_error) + ": " + error, Toast.LENGTH_SHORT).show();
+    mPlayingAlert.dismiss();
+});
+```
+<br>
+
+
+#### 9. 마이크 음소거 변경
+마이크 음소거 여부를 변경한 경우 음소거 여부를 전달하여야 합니다. 앱에서는 현재 음소거 설정 값을 유지하여야 합니다.
+```java
+mRemoteCameraControl.setMicMute(this, mMicMute); // true or false
+```
+<br>
+
+
+#### 10. 전/후 렌즈 변경하기
+카메라 렌즈의 전/후 방향을 변경한 경우 카메라 방향을 전달하여야 합니다. 앱에서는 현재 카메라 방향 값을 유지하여야 합니다.
+```java
+mRemoteCameraControl.setLensFacing(this, mLensFacing); // RemoteCameraApi.LENS_FACING_BACK or RemoteCameraApi.LENS_FACING_FRONT
+```
+<br>
+
+
+원격카메라 종료
+------------------
+사용자가 원격카메라를 종료하는 경우 startRemoteCamera을 호출합니다.
+```java
+mRemoteCameraControl.stopRemoteCamera(this, result->{
+    // 생략
+});
+```
