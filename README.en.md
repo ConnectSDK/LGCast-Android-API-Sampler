@@ -12,7 +12,7 @@ There are two ways to cast the screen on the TV;
 
 ## Dependencies
 - [AndroidX Appcompat library](https://developer.android.com/jetpack/androidx/releases/appcompat)
-- [Connect-SDK-Android-Core](https://github.com/ConnectSDK/Connect-SDK-Android-Core)
+- [Connect-SDK-Android-Lite](https://github.com/ConnectSDK/Connect-SDK-Android-Lite)
 - [GStreamer multimedia framework](https://github.com/ConnectSDK/Connect-SDK-Android-Core/blob/master/jniLibs/libgstreamer_android.tar)
 
 ## Setup with Android Studio

@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Remote Camera Sampler</string>
+
+    <string name="toast_unsupported_os_version">지원하지 않은 OS 버전입니다.</string>
+    <string name="toast_allow_permission">원격카메라를 사용하시려면 권한을 허용해주세요.</string>
+    <string name="toast_not_support_device">원격카메라를 지원하지 않는 기기입니다.</string>
+    <string name="toast_start_failed">원격카메라를 실행할 수 없습니다.</string>
+
+    <string name="toast_play_started">원격카메라 재생이 시작되었습니다.</string>
+    <string name="toast_property_changed">프러퍼티 설정이 변경되었습니다.</string>
+    <string name="toast_running_error">원격카메라 실행 중 에러가 발생하였습니다.</string>
+
+    <string name="dialog_title_notice">알림</string>
+    <string name="dialog_select_tv">TV를 선택하세요</string>
+    <string name="dialog_allow_pairing">TV에서 페어링 요청을 수락해주세요.</string>
+    <string name="dialog_select_camera">[%s] 에서 [%s] 를 선택하세요</string>
+
+    <string name="button_remotecamera_start">원격카메라 시작하기</string>
+    <string name="buttion_turn_mic_on">마이크 켜기</string>
+    <string name="buttion_turn_mic_off">마이크 끄기</string>
+    <string name="buttion_change_lens_to_front">전면으로 전환</string>
+    <string name="buttion_change_lens_to_back">후면으로 전환</string>
+    <string name="button_exit">종료</string>
+</resources>

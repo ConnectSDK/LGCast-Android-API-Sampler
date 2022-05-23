@@ -1,0 +1,24 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 32
+    buildToolsVersion '30.0.3'
+
+    defaultConfig {
+        applicationId 'com.lgcast.sampler.remotecamera'
+        minSdkVersion 24
+        targetSdkVersion 32
+        versionCode 102016
+        versionName '1.2.16'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'com.github.ConnectSDK:Connect-SDK-Android-Lite:-SNAPSHOT'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/cameraStartButton"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="#FFD863"
+        android:onClick="onClickStartRemoteCamera"
+        android:text="@string/button_remotecamera_start"
+        android:textColor="#000000" />
+
+</FrameLayout>

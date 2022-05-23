@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/snakeGameSecondScreenLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="#85BDEA"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/secondGameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#000000"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="1dp" />
+
+    <TextView
+        android:id="@+id/refreshText"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:layout_gravity="center"
+        android:background="#00000000"
+        android:textColor="#00000000" />
+
+</FrameLayout>
